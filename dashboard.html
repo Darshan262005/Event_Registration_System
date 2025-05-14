@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registration Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f6f6ff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 32px;
+    }
+    h2 {
+      color: #3a0ca3;
+      margin-bottom: 24px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px 8px;
+      text-align: left;
+    }
+    th {
+      background: #bdb2ff;
+      color: #222;
+    }
+    tr:nth-child(even) {
+      background: #f1f1fa;
+    }
+    .logout-btn {
+      float: right;
+      margin-top: -40px;
+      background: #7209b7;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .logout-btn:hover {
+      background: #3a0ca3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <h2>Registration Database</h2>
+    <table id="regTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>College</th>
+          <th>City</th>
+          <th>Event</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="errorMsg" style="color:red;margin-top:20px;"></div>
+  </div>
+  <script>
+    // Redirect to login if not authenticated
+    if (localStorage.getItem('isAuthenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('isAuthenticated');
+      window.location.href = 'login.html';
+    }
+
+    function loadRegistrations() {
+      fetch('http://localhost:5000/registrations')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector('#regTable tbody');
+          tbody.innerHTML = '';
+          if (Array.isArray(data) && data.length > 0) {
+            data.forEach(r => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${r.name}</td>
+                <td>${r.gender}</td>
+                <td>${r.email}</td>
+                <td>${r.phone}</td>
+                <td>${r.college}</td>
+                <td>${r.city}</td>
+                <td>${r.event}</td>
+                <td><button onclick="deleteRegistration('${r._id}')">Delete</button></td>
+              `;
+              tbody.appendChild(row);
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="8">No registrations found.</td></tr>';
+          }
+        })
+        .catch(err => {
+          document.getElementById('errorMsg').textContent = 'Failed to load registrations.';
+        });
+    }
+
+    function deleteRegistration(id) {
+      if (confirm('Are you sure you want to delete this registration?')) {
+        fetch(`http://localhost:5000/registrations/${id}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+          loadRegistrations(); // Refresh the table
+        })
+        .catch(err => {
+          alert('Failed to delete registration.');
+        });
+      }
+    }
+
+    // Initial load
+    loadRegistrations();
+  </script>
+</body>
+</html>

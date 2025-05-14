@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Registration</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://cdn-res.bangalores.best/wp-content/uploads/2022/11/NMIT-3.jpg?strip=all&lossy=1&w=2560&ssl=1') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      width: 400px;
+      position: relative;
+    }
+
+    .sticker {
+      position: absolute;
+      top: -25px;
+      right: -15px;
+      font-size: 40px;
+      transform: rotate(10deg);
+    }
+
+    h2 {
+      text-align: center;
+      color: #003566;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: white;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #0077b6, #00b4d8);
+    }
+
+    #loginBtn {
+      background: linear-gradient(135deg, #f72585, #7209b7);
+      margin-top: 10px;
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="sticker">🎉</div>
+    <h2>Event Registration</h2>
+    <form id="registrationForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" required />
+
+      <label for="gender">Gender</label>
+      <select id="gender" required>
+        <option value="">-- Select gender --</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" required />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" pattern="[0-9]{10}" required placeholder="10-digit mobile number" />
+
+      <label for="college">College Name</label>
+      <input type="text" id="college" required />
+
+      <label for="city">City</label>
+      <input type="text" id="city" required />
+
+      <label for="event">Event to Register</label>
+      <select id="event" required>
+        <option value="">-- Choose an event --</option>
+        <option value="Tech Conference">Tech Conference</option>
+        <option value="Music Festival">Music Festival</option>
+        <option value="Art Expo">Art Expo</option>
+        <option value="Startup Meetup">Startup Meetup</option>
+        <option value="Robotics Workshop">Robotics Workshop</option>
+      </select>
+
+      <button type="submit">Register</button>
+      <button type="button" id="loginBtn">User Login</button>
+      <div class="message" id="message"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('registrationForm');
+    const message = document.getElementById('message');
+    const loginBtn = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent default form submission
+
+      // Collect form data as before
+      const name = document.getElementById('name').value.trim();
+      const gender = document.getElementById('gender').value;
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const college = document.getElementById('college').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const event = document.getElementById('event').value;
+
+      const nameRegex = /^[A-Za-z ]{3,}$/;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+      const phoneRegex = /^[0-9]{10}$/;
+
+      if (!nameRegex.test(name)) {
+        showMessage("Invalid name. Use letters and spaces only (min 3 characters).", "red");
+        return;
+      }
+
+      if (!gender) {
+        showMessage("Please select a gender.", "red");
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        showMessage("Invalid email format.", "red");
+        return;
+      }
+
+      if (!phoneRegex.test(phone)) {
+        showMessage("Phone must be 10 digits.", "red");
+        return;
+      }
+
+      if (college.length < 2) {
+        showMessage("Enter a valid college name.", "red");
+        return;
+      }
+
+      if (city.length < 2) {
+        showMessage("Enter a valid city name.", "red");
+        return;
+      }
+
+      if (!event) {
+        showMessage("Please select an event.", "red");
+        return;
+      }
+
+      // Send data to backend
+      fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, gender, email, phone, college, city, event })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.message) {
+          showMessage(`Thanks, ${name}! Registered for ${event}. (Saved to database)`, "green");
+          form.reset();
+        } else {
+          showMessage("Registration failed. Please try again.", "red");
+        }
+      })
+      .catch(() => {
+        showMessage("Server error. Please try again later.", "red");
+      });
+    });
+
+    loginBtn.addEventListener('click', function () {
+      window.location.href = 'login.html';
+    });
+
+    function showMessage(text, color) {
+      message.textContent = text;
+      message.style.color = color;
+    }
+  </script>
+
+</body>
+</html>

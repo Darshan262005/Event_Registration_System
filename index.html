@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to Darshan Events</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://cdn-res.bangalores.best/wp-content/uploads/2022/11/NMIT-3.jpg?strip=all&lossy=1&w=2560&ssl=1') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .welcome-container {
+      background: rgba(255,255,255,0.97);
+      padding: 40px 30px 30px 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      text-align: center;
+      max-width: 400px;
+      position: relative;
+    }
+    .welcome-container h1 {
+      color: #3a0ca3;
+      font-size: 2.3rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .welcome-container p {
+      color: #333;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+    .register-btn {
+      background: linear-gradient(135deg, #00b4d8, #7209b7);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      padding: 12px 32px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+    .register-btn:hover {
+      background: linear-gradient(135deg, #7209b7, #00b4d8);
+    }
+    .chatbot-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: #f6f6ff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      padding: 18px 12px 10px 12px;
+      width: 340px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: box-shadow 0.2s;
+    }
+    .chatbot-header {
+      font-weight: bold;
+      color: #3a0ca3;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      text-align: left;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+      max-height: 120px;
+    }
+    .chat-message {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-end;
+    }
+    .chatbot {
+      background: #bdb2ff;
+      color: #222;
+      padding: 7px 13px;
+      border-radius: 12px 12px 12px 2px;
+      margin-right: auto;
+      max-width: 80%;
+    }
+    .user {
+      background: #00b4d8;
+      color: #fff;
+      padding: 7px 13px;
+      border-radius: 12px 12px 2px 12px;
+      margin-left: auto;
+      max-width: 80%;
+    }
+    .chatbot-input-row {
+      display: flex;
+      gap: 7px;
+    }
+    .chatbot-input {
+      flex: 1;
+      border-radius: 7px;
+      border: 1px solid #ccc;
+      padding: 7px 10px;
+      font-size: 1rem;
+    }
+    .chatbot-send-btn {
+      background: #7209b7;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 15px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .chatbot-send-btn:hover {
+      background: #3a0ca3;
+    }
+    @media (max-width: 500px) {
+      .welcome-container {
+        padding: 20px 8px 18px 8px;
+        max-width: 98vw;
+      }
+      .chatbot-widget {
+        width: 98vw;
+        right: 1vw;
+        bottom: 1vw;
+        min-width: unset;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-container">
+    <h1>Welcome to Event Registration System 🎉</h1>
+    <p>Join us for an unforgettable experience! Register now to participate in exciting events, workshops, and more.</p>
+    <button class="register-btn" onclick="window.location.href='event_registration.html'">Click Here to Register</button>
+  </div>
+  <div class="chatbot-widget" id="chatbotWidget">
+    <div class="chatbot-header">💬 Chat with EventBot</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-message"><div class="chatbot">Hi! 👋 How can I help you today?</div></div>
+    </div>
+    <form class="chatbot-input-row" id="chatForm" autocomplete="off">
+      <input type="text" class="chatbot-input" id="chatInput" placeholder="Type your message..." required />
+      <button type="submit" class="chatbot-send-btn">Send</button>
+    </form>
+  </div>
+  <script>
+    // Simple chatbot logic (replace with Python backend later)
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-message';
+      const bubble = document.createElement('div');
+      bubble.className = sender;
+      bubble.textContent = text;
+      msgDiv.appendChild(bubble);
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const userMsg = chatInput.value.trim();
+      if (!userMsg) return;
+      addMessage(userMsg, 'user');
+      chatInput.value = '';
+
+      // Call Python backend
+      fetch('http://localhost:5001/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMsg })
+      })
+      .then(res => res.json())
+      .then(data => {
+        addMessage(data.reply, 'chatbot');
+      })
+      .catch(() => {
+        addMessage("Sorry, I couldn't connect to the chatbot server.", 'chatbot');
+      });
+    });
+  </script>
+</body>
+</html>
