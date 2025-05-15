@@ -89,7 +89,7 @@
     }
 
     function loadRegistrations() {
-      fetch('http://localhost:3000/registrations')
+      fetch('/registrations')  // Updated URL for same port
         .then(res => res.json())
         .then(data => {
           const tbody = document.querySelector('#regTable tbody');
@@ -115,17 +115,18 @@
         })
         .catch(err => {
           document.getElementById('errorMsg').textContent = 'Failed to load registrations.';
+          console.error('Error fetching registrations:', err);  // Log the error for debugging
         });
     }
 
     function deleteRegistration(id) {
       if (confirm('Are you sure you want to delete this registration?')) {
-        fetch(`http://localhost:5000/registrations/${id}`, {
+        fetch(`/registrations/${id}`, {  // Updated URL for same port
           method: 'DELETE'
         })
         .then(res => res.json())
         .then(data => {
-          loadRegistrations(); // Refresh the table
+          loadRegistrations(); // Refresh the table after deletion
         })
         .catch(err => {
           alert('Failed to delete registration.');
@@ -138,3 +139,4 @@
   </script>
 </body>
 </html>
+
