@@ -89,7 +89,7 @@
     }
 
     function loadRegistrations() {
-      fetch('http://localhost:5000/registrations')
+      fetch('http://localhost:3000/registrations')
         .then(res => res.json())
         .then(data => {
           const tbody = document.querySelector('#regTable tbody');
