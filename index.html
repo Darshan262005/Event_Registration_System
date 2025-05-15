@@ -148,54 +148,18 @@
     <p>Join us for an unforgettable experience! Register now to participate in exciting events, workshops, and more.</p>
     <button class="register-btn" onclick="window.location.href='event_registration.html'">Click Here to Register</button>
   </div>
+
+  <!-- Chatbot UI (non-functional) -->
   <div class="chatbot-widget" id="chatbotWidget">
     <div class="chatbot-header">💬 Chat with EventBot</div>
     <div class="chat-messages" id="chatMessages">
       <div class="chat-message"><div class="chatbot">Hi! 👋 How can I help you today?</div></div>
     </div>
-    <form class="chatbot-input-row" id="chatForm" autocomplete="off">
-      <input type="text" class="chatbot-input" id="chatInput" placeholder="Type your message..." required />
-      <button type="submit" class="chatbot-send-btn">Send</button>
+    <form class="chatbot-input-row" id="chatForm" autocomplete="off" onsubmit="return false;">
+      <input type="text" class="chatbot-input" id="chatInput" placeholder="Type your message..." disabled />
+      <button type="submit" class="chatbot-send-btn" disabled>Send</button>
     </form>
   </div>
-  <script>
-    // Simple chatbot logic (replace with Python backend later)
-    const chatForm = document.getElementById('chatForm');
-    const chatInput = document.getElementById('chatInput');
-    const chatMessages = document.getElementById('chatMessages');
-
-    function addMessage(text, sender) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'chat-message';
-      const bubble = document.createElement('div');
-      bubble.className = sender;
-      bubble.textContent = text;
-      msgDiv.appendChild(bubble);
-      chatMessages.appendChild(msgDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    chatForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const userMsg = chatInput.value.trim();
-      if (!userMsg) return;
-      addMessage(userMsg, 'user');
-      chatInput.value = '';
-
-      // Call Python backend
-      fetch('http://localhost:5001/chatbot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg })
-      })
-      .then(res => res.json())
-      .then(data => {
-        addMessage(data.reply, 'chatbot');
-      })
-      .catch(() => {
-        addMessage("Sorry, I couldn't connect to the chatbot server.", 'chatbot');
-      });
-    });
-  </script>
 </body>
 </html>
+
