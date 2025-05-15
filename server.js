@@ -71,7 +71,7 @@ app.delete('/registrations/:id', async (req, res) => {
 });
 
 // Serve static files from the current directory
-app.use(express.static(path.join(__dirname));
+app.use(express.static(path.join(__dirname)));
 
 // Home route (optional, serves index.html by default)
 app.get('/', (req, res) => {
