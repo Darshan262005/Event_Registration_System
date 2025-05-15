@@ -1,19 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const path = require('path');
 
 const app = express();
 
-// Enable CORS with specific origin if needed (if front-end is on a different port)
-app.use(cors({
-  origin: 'http://localhost:3000' // Update if needed, depending on your front-end server URL
-}));
-
+// Enable JSON parsing for incoming requests
 app.use(express.json());
 
-// Replace with your MongoDB connection string (ensure to replace 'your_database_name' with actual db name)
-const mongoURI = 'mongodb+srv://Darshan:Darshan%402601@cluster0.bixrkyy.mongodb.net/registration';
+// Replace with your MongoDB connection string (ensure to replace 'your_database_name' with the actual db name)
+const mongoURI = 'mongodb+srv://Darshan:Darshan%402601@cluster0.bixrkyy.mongodb.net';
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected!'))
@@ -70,7 +65,7 @@ app.delete('/registrations/:id', async (req, res) => {
   }
 });
 
-// Serve static files from the current directory
+// Serve static files from the current directory (index.html, style.css, script.js)
 app.use(express.static(path.join(__dirname)));
 
 // Home route (optional, serves index.html by default)
@@ -79,5 +74,7 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 

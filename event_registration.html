@@ -182,7 +182,7 @@
       }
 
       // Send data to backend
-      fetch('http://localhost:3000/register', {
+      fetch('/register', { // Changed to relative path
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, gender, email, phone, college, city, event })
@@ -213,3 +213,4 @@
 
 </body>
 </html>
+
